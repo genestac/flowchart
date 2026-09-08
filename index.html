@@ -1,0 +1,2726 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI-Native Health OS &amp; Multi-Agent Platform Flowchart</title>
+    <script src="https://cdn.jsdelivr.net/npm/microsoft-cognitiveservices-speech-sdk@latest/distrib/browser/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --bg2: #ffffff;
+        --ink: #0f172a;
+        --muted: #475569;
+        --muted-dim: #94a3b8;
+        --surface: rgba(255, 255, 255, 0.85);
+        --surface-solid: #ffffff;
+        --border: rgba(148, 163, 184, 0.28);
+        --border-soft: rgba(148, 163, 184, 0.15);
+
+        /* accent triplets, tuned for rich vibrant contrast on light background */
+        --cyan: 2, 132, 199;     /* acquisition & goals */
+        --violet: 124, 58, 237;  /* Master AI Health OS & Multi-Agent Swarm */
+        --teal: 13, 148, 136;    /* core app & autonomous actions */
+        --amber: 217, 119, 6;    /* decision nodes & doctor oversight */
+        --gold: 202, 138, 4;     /* patient vector memory & data backbone */
+
+        --edge-teal: #0d9488;
+        --edge-amber: #d97706;
+        --edge-text-teal: #0f766e;
+        --edge-text-amber: #b45309;
+        --edge-text-halo: #ffffff;
+        --card-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.05);
+        --heading-gradient: linear-gradient(100deg, #0f172a 10%, rgba(var(--violet), 1) 55%, rgba(var(--teal), 1) 90%);
+        --data-node-bg: linear-gradient(160deg, rgba(254, 243, 199, 0.85), rgba(255, 255, 255, 0.95));
+        --data-node-h4: #78350f;
+        --data-node-sub: #854d0e;
+        --grid-line: rgba(99, 102, 241, 0.07);
+        --glow-opacity: 0.18;
+      }
+
+      [data-theme="dark"] {
+        --bg: #060911;
+        --bg2: #0a0f1a;
+        --ink: #e9effa;
+        --muted: #7e90aa;
+        --muted-dim: #57647a;
+        --surface: rgba(16, 23, 36, 0.62);
+        --surface-solid: #0e1522;
+        --border: rgba(150, 180, 255, 0.14);
+        --border-soft: rgba(150, 180, 255, 0.08);
+
+        --cyan: 94, 224, 255;
+        --violet: 162, 150, 255;
+        --teal: 79, 227, 196;
+        --amber: 255, 176, 103;
+        --gold: 255, 209, 122;
+
+        --edge-teal: #4fe3c4;
+        --edge-amber: #ffb067;
+        --edge-text-teal: #8fefda;
+        --edge-text-amber: #ffc98c;
+        --edge-text-halo: #060911;
+        --card-shadow: 0 1px 0 rgba(255, 255, 255, 0.02) inset, 0 8px 24px -14px rgba(0, 0, 0, 0.6);
+        --heading-gradient: linear-gradient(100deg, #f3f6ff 10%, rgba(var(--violet), 1) 55%, rgba(var(--teal), 1) 90%);
+        --data-node-bg: linear-gradient(160deg, rgba(255, 209, 122, 0.1), rgba(16, 23, 36, 0.75));
+        --data-node-h4: #fff3dc;
+        --data-node-sub: #d8c9a6;
+        --grid-line: rgba(150, 180, 255, 0.05);
+        --glow-opacity: 0.24;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Inter", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        position: relative;
+        overflow-x: hidden;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* ambient living background: slow-drifting glowing halos + fine tech grid */
+      .ambient {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .ambient .glow {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(100px);
+        opacity: var(--glow-opacity);
+        transition: opacity 0.3s ease;
+      }
+      .ambient .glow.g1 {
+        width: 680px;
+        height: 680px;
+        top: -220px;
+        left: -160px;
+        background: radial-gradient(
+          circle,
+          rgba(var(--violet), 0.9),
+          transparent 70%
+        );
+        animation: drift1 34s ease-in-out infinite;
+      }
+      .ambient .glow.g2 {
+        width: 720px;
+        height: 720px;
+        bottom: -260px;
+        right: -200px;
+        background: radial-gradient(
+          circle,
+          rgba(var(--teal), 0.85),
+          transparent 70%
+        );
+        animation: drift2 40s ease-in-out infinite;
+      }
+      .ambient .glow.g3 {
+        width: 540px;
+        height: 540px;
+        top: 45%;
+        left: 30%;
+        background: radial-gradient(
+          circle,
+          rgba(var(--amber), 0.6),
+          transparent 70%
+        );
+        animation: drift3 46s ease-in-out infinite;
+      }
+      .ambient .grid {
+        position: absolute;
+        inset: 0;
+        opacity: 0.5;
+        background-image:
+          linear-gradient(var(--grid-line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+        background-size: 46px 46px;
+        mask-image: radial-gradient(
+          ellipse 80% 60% at 50% 20%,
+          black 40%,
+          transparent 90%
+        );
+      }
+      @keyframes drift1 {
+        0%, 100% { transform: translate(0, 0); }
+        50% { transform: translate(60px, 40px); }
+      }
+      @keyframes drift2 {
+        0%, 100% { transform: translate(0, 0); }
+        50% { transform: translate(-50px, -60px); }
+      }
+      @keyframes drift3 {
+        0%, 100% { transform: translate(0, 0); }
+        50% { transform: translate(-40px, 50px); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .ambient .glow {
+          animation: none;
+        }
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        max-width: 1340px;
+        margin: 0 auto;
+        padding: 40px 24px 110px;
+      }
+
+      /* ---- header & controls ---- */
+      .top-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .theme-toggle-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11.5px;
+        letter-spacing: 0.05em;
+        color: var(--ink);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 6px 14px;
+        cursor: pointer;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        transition: all 0.25s ease;
+        box-shadow: var(--card-shadow);
+      }
+      .theme-toggle-btn:hover {
+        border-color: rgba(var(--violet), 0.5);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(var(--violet), 0.18);
+      }
+      .theme-icon {
+        flex-shrink: 0;
+      }
+      :root:not([data-theme="dark"]) .moon-icon { display: block; }
+      :root:not([data-theme="dark"]) .sun-icon { display: none; }
+      [data-theme="dark"] .moon-icon { display: none; }
+      [data-theme="dark"] .sun-icon { display: block; }
+
+      /* ---- Live Telemetry Ribbon ---- */
+      .signals-ribbon {
+        margin-bottom: 24px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 18px;
+        backdrop-filter: blur(14px);
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+      }
+      .signals-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(var(--violet), 1);
+        margin-bottom: 10px;
+      }
+      .signals-head .pulse-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: rgba(var(--violet), 1);
+        box-shadow: 0 0 8px rgba(var(--violet), 0.9);
+        animation: blink 1.8s ease-in-out infinite;
+      }
+      .signals-track {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .signal-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: var(--ink);
+        background: rgba(var(--violet), 0.08);
+        border: 1px solid rgba(var(--violet), 0.25);
+        border-radius: 20px;
+        padding: 5px 12px;
+      }
+      .signal-chip .val {
+        color: rgba(var(--teal), 1);
+        font-weight: 600;
+      }
+
+      /* ---- hero ---- */
+      .hero {
+        margin-bottom: 58px;
+      }
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11.5px;
+        letter-spacing: 0.06em;
+        color: rgba(var(--teal), 1);
+        background: rgba(var(--teal), 0.08);
+        border: 1px solid rgba(var(--teal), 0.3);
+        border-radius: 20px;
+        padding: 6px 13px 6px 10px;
+        text-transform: uppercase;
+      }
+      .status-pill .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: rgba(var(--teal), 1);
+        box-shadow: 0 0 8px 1px rgba(var(--teal), 0.8);
+        animation: blink 1.8s ease-in-out infinite;
+      }
+      @keyframes blink {
+        0%, 100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(0.75);
+        }
+      }
+
+      .hero h1 {
+        font-family: "Fraunces", serif;
+        font-weight: 500;
+        font-size: clamp(30px, 4.4vw, 47px);
+        line-height: 1.12;
+        margin: 0 0 16px;
+        max-width: 860px;
+        letter-spacing: -0.01em;
+        background: var(--heading-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .hero p {
+        font-size: 16px;
+        line-height: 1.65;
+        color: var(--muted);
+        max-width: 680px;
+        margin: 0;
+      }
+
+      .legend {
+        display: flex;
+        gap: 14px;
+        margin-top: 26px;
+        flex-wrap: wrap;
+      }
+      .legend span {
+        font-size: 12px;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 6px 13px;
+        backdrop-filter: blur(10px);
+        box-shadow: var(--card-shadow);
+      }
+      .legend .sw {
+        width: 20px;
+        height: 0;
+        border-top: 2.2px solid var(--edge-teal);
+        filter: drop-shadow(0 0 3px rgba(var(--teal), 0.5));
+      }
+      .legend .sw.dashed {
+        border-top: 2.2px dashed var(--edge-amber);
+        filter: drop-shadow(0 0 3px rgba(var(--amber), 0.5));
+      }
+
+      /* ---- stage labels ---- */
+      .stage-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: rgba(var(--accent, var(--teal)), 1);
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        margin-bottom: 16px;
+      }
+      .stage-label .num {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: rgba(var(--accent, var(--teal)), 0.12);
+        border: 1px solid rgba(var(--accent, var(--teal)), 0.55);
+        color: rgba(var(--accent, var(--teal)), 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        box-shadow: 0 0 10px -1px rgba(var(--accent, var(--teal)), 0.4);
+      }
+
+      #s1 { --accent: var(--cyan); }
+      #s2 { --accent: var(--violet); }
+      #s3 { --accent: var(--cyan); }
+      #s4 { --accent: var(--teal); }
+      #s5 { --accent: var(--violet); }
+      #s6 { --accent: var(--gold); }
+      #s7 { --accent: var(--amber); }
+      #s8 { --accent: var(--teal); }
+      #s9 { --accent: var(--amber); }
+      #s10 { --accent: var(--gold); }
+
+      /* ---- flow layout ---- */
+      .flow {
+        position: relative;
+      }
+      .flow-inner {
+        max-width: 740px;
+        margin: 0 auto;
+      }
+      .stage {
+        position: relative;
+        z-index: 2;
+        margin-bottom: 96px;
+      }
+      .row {
+        display: flex;
+        gap: 36px;
+        flex-wrap: wrap;
+      }
+      .row.center {
+        justify-content: center;
+      }
+
+      .node {
+        background: var(--surface);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(var(--accent, var(--teal)), 0.3);
+        border-radius: 9px;
+        padding: 14px 16px;
+        position: relative;
+        font-size: 13px;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+      }
+      .node:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px -6px rgba(var(--accent, var(--teal)), 0.25);
+        border-color: rgba(var(--accent, var(--teal)), 0.6);
+      }
+      .node h4 {
+        font-family: "Fraunces", serif;
+        font-weight: 500;
+        font-size: 15px;
+        margin: 0 0 4px;
+        color: var(--ink);
+      }
+      .node .sub {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      /* Master AI Health OS Central Hub */
+      .node.ai-os-hub {
+        background: linear-gradient(135deg, rgba(var(--violet), 0.12), var(--surface-solid));
+        border: 2px solid rgba(var(--violet), 0.75);
+        min-width: 320px;
+        max-width: 580px;
+        margin: 0 auto;
+        padding: 22px 24px;
+        text-align: center;
+        box-shadow:
+          0 0 0 1px rgba(var(--violet), 0.25) inset,
+          0 12px 40px -8px rgba(var(--violet), 0.45);
+        animation: breatheViolet 3.8s ease-in-out 0.1s infinite;
+      }
+      .node.ai-os-hub h4 {
+        font-size: 21px;
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+      .node.ai-os-hub h4::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(var(--violet), 1);
+        box-shadow: 0 0 12px 2px rgba(var(--violet), 0.9);
+        animation: blink 2s ease-in-out infinite;
+      }
+      @keyframes breatheViolet {
+        0%, 100% {
+          opacity: 1;
+          transform: scale(1);
+          box-shadow:
+            0 0 0 1px rgba(var(--violet), 0.2) inset,
+            0 10px 35px -6px rgba(var(--violet), 0.35);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1);
+          box-shadow:
+            0 0 0 1px rgba(var(--violet), 0.4) inset,
+            0 16px 50px -2px rgba(var(--violet), 0.65);
+        }
+      }
+
+      /* Goal Engine Node */
+      .node.goal-node {
+        background: linear-gradient(135deg, rgba(var(--cyan), 0.1), var(--surface-solid));
+        border: 1.5px solid rgba(var(--cyan), 0.5);
+        min-width: 280px;
+      }
+
+      /* Patient Vector Memory Node */
+      .node.memory-node {
+        background: linear-gradient(135deg, rgba(var(--gold), 0.12), var(--surface-solid));
+        border: 1.5px solid rgba(var(--gold), 0.6);
+        max-width: 580px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      .node.memory-node h4 {
+        color: var(--data-node-h4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 18px;
+      }
+
+      /* Decision Nodes (Diamond / Logic Gates) */
+      .node.decision-node {
+        background: linear-gradient(135deg, rgba(var(--amber), 0.12), var(--surface-solid));
+        border: 1.5px solid rgba(var(--amber), 0.65);
+        min-width: 260px;
+        border-radius: 12px;
+      }
+      .node.decision-node h4 {
+        color: var(--ink);
+        font-size: 14.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .decision-tag {
+        display: inline-block;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 12px;
+        color: rgba(var(--amber), 1);
+        background: rgba(var(--amber), 0.12);
+        border: 1px solid rgba(var(--amber), 0.3);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+      }
+
+      /* Autonomous Action Engine Panel */
+      .node.actions-node {
+        background: linear-gradient(135deg, rgba(var(--teal), 0.1), var(--surface-solid));
+        border: 1.5px solid rgba(var(--teal), 0.6);
+        min-width: 320px;
+        max-width: 520px;
+        margin: 0 auto;
+      }
+      .action-list {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .action-list li {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11.5px;
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .action-list li span.check {
+        color: rgba(var(--teal), 1);
+        font-weight: bold;
+      }
+
+      .node.hub {
+        border-color: rgba(var(--accent, var(--teal)), 0.65);
+        border-width: 1.5px;
+        min-width: 220px;
+        background: var(--surface-solid);
+        box-shadow:
+          0 0 0 1px rgba(var(--accent, var(--teal)), 0.15) inset,
+          0 6px 24px -4px rgba(var(--accent, var(--teal)), 0.35);
+        animation: breathe 4.2s ease-in-out 0.1s infinite;
+      }
+      .node.hub h4 {
+        font-size: 17px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .node.hub h4::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: rgba(var(--accent, var(--teal)), 1);
+        box-shadow: 0 0 8px 1px rgba(var(--accent, var(--teal)), 0.9);
+        animation: blink 2.4s ease-in-out infinite;
+      }
+      @keyframes breathe {
+        0%, 100% {
+          opacity: 1;
+          transform: scale(1);
+          box-shadow:
+            0 0 0 1px rgba(var(--accent, var(--teal)), 0.15) inset,
+            0 6px 24px -4px rgba(var(--accent, var(--teal)), 0.3);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1);
+          box-shadow:
+            0 0 0 1px rgba(var(--accent, var(--teal)), 0.3) inset,
+            0 10px 32px -2px rgba(var(--accent, var(--teal)), 0.55);
+        }
+      }
+
+      .node.solo {
+        min-width: 220px;
+      }
+      .node.chip {
+        padding: 10px 13px;
+        font-size: 12px;
+        border-color: rgba(var(--accent, var(--teal)), 0.22);
+      }
+      .node.chip h4 {
+        font-size: 12.5px;
+        margin-bottom: 2px;
+        color: var(--ink);
+      }
+
+      .node.data-node {
+        background: var(--data-node-bg);
+        border: 1.5px solid rgba(var(--gold), 0.7);
+        max-width: 560px;
+        margin: 0 auto;
+        text-align: center;
+        box-shadow:
+          0 0 0 1px rgba(var(--gold), 0.2) inset,
+          0 8px 32px -6px rgba(var(--gold), 0.35);
+        animation: breatheGold 3.6s ease-in-out 0.1s infinite;
+      }
+      .node.data-node h4 {
+        color: var(--data-node-h4);
+        font-size: 19px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      .node.data-node h4::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(var(--gold), 1);
+        box-shadow: 0 0 10px 2px rgba(var(--gold), 0.9);
+        animation: blink 2s ease-in-out infinite;
+      }
+      .node.data-node .sub {
+        color: var(--data-node-sub);
+      }
+      @keyframes breatheGold {
+        0%, 100% {
+          opacity: 1;
+          transform: scale(1);
+          box-shadow:
+            0 0 0 1px rgba(var(--gold), 0.2) inset,
+            0 8px 30px -6px rgba(var(--gold), 0.3);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1);
+          box-shadow:
+            0 0 0 1px rgba(var(--gold), 0.35) inset,
+            0 12px 42px -2px rgba(var(--gold), 0.55);
+        }
+      }
+
+      .cluster {
+        border: 1.5px dashed rgba(var(--accent, var(--teal)), 0.35);
+        border-radius: 12px;
+        padding: 22px;
+        background: rgba(var(--accent, var(--teal)), 0.04);
+      }
+      .cluster-inner {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+        gap: 30px;
+      }
+      .hub-cluster-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 50px;
+      }
+      .hub-cluster-wrap .cluster {
+        width: 100%;
+      }
+      .branch-row {
+        display: flex;
+        gap: 64px;
+        justify-content: center;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+
+      #connectors {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
+      }
+      #connectors path.edge {
+        fill: none;
+        stroke: var(--edge-teal);
+        stroke-width: 2.2;
+        stroke-linecap: round;
+      }
+      #connectors path.edge.dashed {
+        stroke: var(--edge-amber);
+        stroke-width: 2.2;
+      }
+      #connectors text {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        font-weight: 600;
+        fill: var(--edge-text-teal);
+        letter-spacing: 0.02em;
+        paint-order: stroke;
+        stroke: var(--edge-text-halo);
+        stroke-width: 4px;
+        stroke-linejoin: round;
+      }
+      #connectors path.edge.dashed ~ text {
+        fill: var(--edge-text-amber);
+      }
+      #connectors circle.pulse {
+        fill: var(--edge-teal);
+        filter: drop-shadow(0 0 7px rgba(var(--teal), 0.9));
+      }
+      #connectors circle.pulse.amber {
+        fill: var(--edge-amber);
+        filter: drop-shadow(0 0 9px rgba(var(--amber), 0.95));
+      }
+
+      /* Immediate appearance for nodes and clusters */
+      .node {
+        opacity: 1;
+        transform: none;
+      }
+      .cluster {
+        opacity: 1;
+        transform: none;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .node,
+        .cluster {
+          animation: none;
+          opacity: 1;
+          transform: none;
+        }
+        .node.hub,
+        .node.data-node,
+        .node.ai-os-hub {
+          animation: none;
+        }
+      }
+
+      /* ---- revenue section ---- */
+      .revenue {
+        margin-top: 26px;
+        padding-top: 56px;
+        border-top: 1px solid var(--border);
+      }
+      .revenue-head {
+        margin-bottom: 34px;
+      }
+      .revenue-head .kicker {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11.5px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(var(--gold), 1);
+        font-weight: 600;
+        margin-bottom: 14px;
+      }
+      .revenue-head h2 {
+        font-family: "Fraunces", serif;
+        font-weight: 500;
+        font-size: clamp(26px, 3.6vw, 36px);
+        margin: 0 0 12px;
+        color: var(--ink);
+      }
+      .revenue-head p {
+        font-size: 15px;
+        color: var(--muted);
+        max-width: 620px;
+        line-height: 1.65;
+        margin: 0;
+      }
+      .rev-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+      .rev-card {
+        background: var(--surface);
+        backdrop-filter: blur(14px);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      }
+      .rev-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(var(--violet), 0.4);
+        box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.12);
+      }
+      .rev-card .tag {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        width: fit-content;
+      }
+      .rev-card:nth-child(1) .tag,
+      .rev-card:nth-child(2) .tag {
+        color: rgba(var(--teal), 1);
+        background: rgba(var(--teal), 0.1);
+        border: 1px solid rgba(var(--teal), 0.3);
+      }
+      .rev-card:nth-child(3) .tag {
+        color: rgba(var(--violet), 1);
+        background: rgba(var(--violet), 0.1);
+        border: 1px solid rgba(var(--violet), 0.3);
+      }
+      .rev-card:nth-child(4) .tag,
+      .rev-card:nth-child(5) .tag {
+        color: rgba(var(--cyan), 1);
+        background: rgba(var(--cyan), 0.1);
+        border: 1px solid rgba(var(--cyan), 0.3);
+      }
+      .rev-card:nth-child(6) .tag {
+        color: rgba(var(--amber), 1);
+        background: rgba(var(--amber), 0.1);
+        border: 1px solid rgba(var(--amber), 0.3);
+      }
+      .rev-card:nth-child(7) .tag {
+        color: rgba(var(--gold), 1);
+        background: rgba(var(--gold), 0.1);
+        border: 1px solid rgba(var(--gold), 0.3);
+      }
+      .rev-card:nth-child(8) .tag {
+        color: rgba(var(--violet), 1);
+        background: rgba(var(--violet), 0.1);
+        border: 1px solid rgba(var(--violet), 0.3);
+      }
+      .rev-card h4 {
+        font-family: "Fraunces", serif;
+        font-weight: 500;
+        font-size: 17px;
+        margin: 2px 0 2px;
+        color: var(--ink);
+      }
+      .rev-card p {
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--muted);
+        margin: 0;
+      }
+
+      .funnel-note {
+        margin-top: 38px;
+        position: relative;
+        border-radius: 10px;
+        padding: 26px 28px;
+        background: linear-gradient(
+          135deg,
+          rgba(var(--violet), 0.08),
+          var(--surface-solid)
+        );
+        border: 1px solid rgba(var(--violet), 0.3);
+        box-shadow: 0 8px 30px -10px rgba(var(--violet), 0.2);
+      }
+      .funnel-note h5 {
+        font-family: "Fraunces", serif;
+        font-weight: 500;
+        font-size: 16.5px;
+        margin: 0 0 9px;
+        color: var(--ink);
+      }
+      .funnel-note p {
+        margin: 0;
+        font-size: 13.5px;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      /* App Screenshots Embedded Preview & Modal System */
+      .node-has-ss {
+        cursor: pointer;
+      }
+      .ss-device-frame {
+        margin-top: 10px;
+        border-radius: 10px;
+        border: 1.5px solid rgba(var(--accent, var(--teal)), 0.35);
+        overflow: hidden;
+        position: relative;
+        height: 130px;
+        background: var(--surface-solid);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+      }
+      .node-has-ss:hover .ss-device-frame {
+        transform: translateY(-2px) scale(1.02);
+        border-color: rgba(var(--teal), 0.75);
+        box-shadow: 0 8px 22px rgba(var(--teal), 0.22);
+      }
+      .ss-device-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top center;
+        display: block;
+      }
+      .ss-hover-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.45);
+        backdrop-filter: blur(2px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+      .ss-device-frame:hover .ss-hover-overlay {
+        opacity: 1;
+      }
+      .ss-expand-badge {
+        background: rgba(16, 185, 129, 0.95);
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 5px 11px;
+        border-radius: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        letter-spacing: 0.3px;
+      }
+      .ss-caption-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 8px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--teal);
+        background: rgba(var(--teal), 0.1);
+        padding: 3px 9px;
+        border-radius: 12px;
+        border: 1px solid rgba(var(--teal), 0.25);
+      }
+      .ss-caption-pill .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(var(--teal), 1);
+        animation: blink 2s infinite;
+      }
+      .ss-chip-badge {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--teal);
+        background: rgba(var(--teal), 0.12);
+        padding: 2px 7px;
+        border-radius: 10px;
+        margin-left: 6px;
+        border: 1px solid rgba(var(--teal), 0.3);
+      }
+
+      /* Modal Lightbox styling */
+      .app-modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(15, 23, 42, 0.78);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .app-modal-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .app-modal-card {
+        background: var(--surface-solid);
+        border: 1px solid rgba(var(--accent, var(--teal)), 0.35);
+        border-radius: 20px;
+        max-width: 920px;
+        width: 100%;
+        max-height: 90vh;
+        overflow: hidden;
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.45);
+        display: flex;
+        flex-direction: column;
+        transform: scale(0.95) translateY(10px);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .app-modal-overlay.active .app-modal-card {
+        transform: scale(1) translateY(0);
+      }
+      .app-modal-header {
+        padding: 16px 24px;
+        border-bottom: 1px solid rgba(var(--accent, var(--teal)), 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(var(--teal), 0.04);
+      }
+      .app-modal-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .app-modal-title-wrap h3 {
+        font-family: "Fraunces", serif;
+        font-size: 18px;
+        margin: 0;
+        color: var(--ink);
+      }
+      .app-modal-close-btn {
+        background: rgba(var(--teal), 0.1);
+        border: 1px solid rgba(var(--teal), 0.3);
+        color: var(--ink);
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .app-modal-close-btn:hover {
+        background: rgba(var(--teal), 0.25);
+        transform: rotate(90deg);
+      }
+      .app-modal-tabs {
+        display: flex;
+        gap: 8px;
+        padding: 12px 24px;
+        background: var(--surface);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        overflow-x: auto;
+      }
+      .app-modal-tab {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted);
+        background: transparent;
+        border: 1px solid transparent;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+      }
+      .app-modal-tab.active, .app-modal-tab:hover {
+        color: var(--teal);
+        background: rgba(var(--teal), 0.12);
+        border-color: rgba(var(--teal), 0.3);
+      }
+      .app-modal-body {
+        padding: 24px;
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 28px;
+        overflow-y: auto;
+        align-items: start;
+      }
+      @media (max-width: 768px) {
+        .app-modal-body {
+          grid-template-columns: 1fr;
+        }
+      }
+      .phone-frame-container {
+        position: relative;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        border-radius: 28px;
+        padding: 10px;
+        background: #111827;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), 0 0 0 2px #374151;
+      }
+      .phone-frame-notch {
+        width: 90px;
+        height: 12px;
+        background: #111827;
+        margin: 0 auto 8px;
+        border-radius: 0 0 10px 10px;
+      }
+      .phone-frame-screen {
+        border-radius: 20px;
+        overflow: hidden;
+        background: #000;
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+      .phone-frame-screen img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .app-modal-info h4 {
+        font-family: "Fraunces", serif;
+        font-size: 20px;
+        margin: 0 0 8px;
+        color: var(--ink);
+      }
+      .app-modal-info .modal-subtitle {
+        font-size: 13px;
+        color: var(--teal);
+        font-weight: 600;
+        margin-bottom: 16px;
+      }
+      .app-modal-info p {
+        font-size: 13.5px;
+        line-height: 1.6;
+        color: var(--muted);
+        margin: 0 0 16px;
+      }
+      .app-modal-features {
+        background: rgba(var(--teal), 0.05);
+        border: 1px solid rgba(var(--teal), 0.2);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
+      }
+      .app-modal-features h5 {
+        font-size: 13px;
+        margin: 0 0 10px;
+        color: var(--ink);
+      }
+      .app-modal-features ul {
+        margin: 0;
+        padding-left: 18px;
+        font-size: 12.5px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .app-modal-features li {
+        margin-bottom: 4px;
+      }
+      .app-modal-footer {
+        padding: 16px 24px;
+        border-top: 1px solid rgba(var(--accent, var(--teal)), 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--surface);
+      }
+      .app-modal-nav-btn {
+        padding: 8px 18px;
+        border-radius: 12px;
+        border: 1px solid rgba(var(--teal), 0.3);
+        background: rgba(var(--teal), 0.1);
+        color: var(--ink);
+        font-weight: 500;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .app-modal-nav-btn:hover {
+        background: rgba(var(--teal), 0.22);
+        border-color: rgba(var(--teal), 0.5);
+      }
+
+      /* Microsoft AI Voice Guide Widget & Tour Highlighting */
+      .voice-guide-widget {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9990;
+        background: var(--surface-solid);
+        border: 1.5px solid rgba(var(--accent, var(--teal)), 0.4);
+        border-radius: 24px;
+        padding: 10px 16px;
+        box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-width: 92vw;
+        width: max-content;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .voice-guide-inner {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+      .voice-guide-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        font-size: 12.5px;
+        color: var(--ink);
+      }
+      .ms-logo-icon {
+        color: #0078D4;
+        font-weight: bold;
+        font-size: 15px;
+      }
+      .voice-guide-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .tour-btn {
+        padding: 6px 14px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid rgba(var(--teal), 0.3);
+        background: rgba(var(--teal), 0.1);
+        color: var(--ink);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .tour-btn.primary {
+        background: linear-gradient(135deg, #0d9488, #059669) !important;
+        color: #ffffff !important;
+        border: 1px solid #047857 !important;
+        font-weight: 700 !important;
+        font-size: 13px !important;
+        padding: 7px 18px !important;
+        box-shadow: 0 4px 16px rgba(13, 148, 136, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.2) inset !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+      }
+      .tour-btn.primary:hover {
+        background: linear-gradient(135deg, #0f766e, #047857) !important;
+        transform: translateY(-1px) scale(1.02);
+        box-shadow: 0 6px 20px rgba(13, 148, 136, 0.6) !important;
+      }
+      .tour-btn.danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border-color: rgba(239, 68, 68, 0.3);
+      }
+      .tour-btn:hover {
+        background: rgba(var(--teal), 0.2);
+      }
+      .tour-divider {
+        width: 1px;
+        height: 20px;
+        background: rgba(var(--accent, var(--teal)), 0.25);
+      }
+      .tour-select {
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 11.5px;
+        border: 1px solid rgba(var(--teal), 0.3);
+        background: var(--surface);
+        color: var(--ink);
+        cursor: pointer;
+        outline: none;
+      }
+      .closed-captions-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(15, 23, 42, 0.88);
+        color: #f8fafc;
+        padding: 6px 14px;
+        border-radius: 14px;
+        font-size: 12px;
+        line-height: 1.4;
+        max-width: 760px;
+      }
+      .cc-badge {
+        background: #38bdf8;
+        color: #0f172a;
+        font-size: 10px;
+        font-weight: 800;
+        padding: 2px 5px;
+        border-radius: 4px;
+        letter-spacing: 0.5px;
+        flex-shrink: 0;
+      }
+      .cc-text {
+        color: #e2e8f0;
+        font-weight: 400;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* Stage Highlighting during Tour */
+      .stage.tour-active {
+        box-shadow: 0 0 0 2px rgba(var(--teal), 0.6), 0 12px 40px -10px rgba(var(--teal), 0.3);
+        border-color: rgba(var(--teal), 0.8) !important;
+        transition: all 0.4s ease;
+      }
+      .node.tour-focused {
+        animation: tourPulse 1.8s ease-in-out infinite !important;
+        box-shadow: 0 0 0 3px rgba(var(--teal), 0.9), 0 0 30px rgba(var(--teal), 0.6) !important;
+        border-color: var(--teal) !important;
+      }
+      @keyframes tourPulse {
+        0%, 100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 3px rgba(var(--teal), 0.9), 0 0 25px rgba(var(--teal), 0.5);
+        }
+        50% {
+          transform: scale(1.03);
+          box-shadow: 0 0 0 5px rgba(var(--teal), 1), 0 0 35px rgba(var(--teal), 0.75);
+        }
+      }
+
+      @media (max-width: 900px) {
+        .rev-grid {
+          grid-template-columns: 1fr;
+        }
+        #connectors {
+          display: none;
+        }
+        .row {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ambient">
+      <div class="glow g1"></div>
+      <div class="glow g2"></div>
+      <div class="glow g3"></div>
+      <div class="grid"></div>
+    </div>
+
+    <div class="page">
+      <div class="top-bar">
+        <div class="status-pill">
+          <span class="dot"></span>AI-Native Health Operating System — Multi-Agent Live Flow
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center">
+          <button class="theme-toggle-btn gallery-btn" onclick="openAppModal('profile')" title="View Live App Screenshots" style="border-color: rgba(var(--teal), 0.4); color: var(--teal); background: rgba(var(--teal), 0.08)">
+            <span>📱 Live App Screenshots (6)</span>
+          </button>
+          <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark/light theme" title="Switch theme">
+            <svg class="theme-icon sun-icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg class="theme-icon moon-icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <span class="theme-label">Light Theme</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="signals-ribbon">
+        <div class="signals-head">
+          <span class="pulse-dot"></span>Real-Time Patient Telemetry &amp; Signal Stream
+        </div>
+        <div class="signals-track">
+          <div class="signal-chip">Weight Telemetry <span class="val">78.4 kg (-0.6)</span></div>
+          <div class="signal-chip">Continuous Glucose <span class="val">98 mg/dL</span></div>
+          <div class="signal-chip">Fasting Timer <span class="val">14h 20m</span></div>
+          <div class="signal-chip">Sleep Metrics <span class="val">7h 45m (Deep 22%)</span></div>
+          <div class="signal-chip">Hydration <span class="val">2.4 / 3.0 L</span></div>
+          <div class="signal-chip">Lab Diagnostics <span class="val">HbA1c 5.6%</span></div>
+          <div class="signal-chip">Wearable Sync <span class="val">Active 8,420 steps</span></div>
+        </div>
+      </div>
+
+      <div class="hero">
+        <h1>
+          AI-Native Health Operating System &amp; Autonomous Multi-Agent Platform
+        </h1>
+        <p>
+          Master AI Health OS sits at the center of gravity—coordinating multi-agent reasoning, patient vector memory, goal decomposition, decision gates, autonomous action execution, and clinical safety loops.
+        </p>
+        <div class="legend">
+          <span><span class="sw"></span>Forward Agentic Flow</span>
+          <span><span class="sw dashed"></span>Feedback / Context / Review Loop</span>
+        </div>
+      </div>
+
+      <div class="flow" id="flow">
+        <svg id="connectors"></svg>
+        <div class="flow-inner">
+
+          <!-- Stage 1 -->
+          <div class="stage" id="s1">
+            <div class="stage-label"><span class="num">1</span>Acquisition &amp; Lead Engine</div>
+            <div class="row center">
+              <div class="node solo" id="n-website">
+                <h4>Website</h4>
+                <div class="sub">Organic + direct traffic</div>
+              </div>
+              <div class="node solo" id="n-ads">
+                <h4>Meta Ads</h4>
+                <div class="sub">Paid social lead-gen</div>
+              </div>
+              <div class="node solo" id="n-search">
+                <h4>Google Search</h4>
+                <div class="sub">SEO blogs &amp; landing pages</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage 2 -->
+          <div class="stage" id="s2">
+            <div class="stage-label"><span class="num">2</span>CRM Engagement Engine — 5 Sequential Steps</div>
+            <div class="row center">
+              <div class="node solo" id="n-crm1">
+                <h4>Step 1 · WhatsApp AI Chatbot</h4>
+                <div class="sub">Learns goals, books consults</div>
+              </div>
+              <div class="node solo" id="n-crm2">
+                <h4>Step 2 · AI Voice Bot</h4>
+                <div class="sub">Calls within 5 minutes</div>
+              </div>
+              <div class="node solo" id="n-crm3">
+                <h4>Step 3 · Habit Reminders</h4>
+                <div class="sub">Water, steps, fasting, logging</div>
+              </div>
+              <div class="node solo" id="n-crm4">
+                <h4>Step 4 · WhatsApp Campaigns</h4>
+                <div class="sub">Periodic re-engagement</div>
+              </div>
+              <div class="node solo" id="n-crm5">
+                <h4>Step 5 · Centralized Record</h4>
+                <div class="sub">Single user profile</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage 3 -->
+          <div class="stage" id="s3">
+            <div class="stage-label"><span class="num">3</span>App Onboarding &amp; AI Goal Engine</div>
+            <div class="row center">
+              <div class="node solo node-has-ss" id="n-reg" onclick="openAppModal('profile', event)">
+                <div class="node-header">
+                  <h4>Registration &amp; Profile</h4>
+                  <div class="sub">Gender, height, weight, age, target weight</div>
+                </div>
+                <div class="ss-device-frame">
+                  <img src="assets/screenshots/app_profile.jpg" alt="Profile & Membership Screen" loading="lazy" />
+                  <div class="ss-hover-overlay">
+                    <span class="ss-expand-badge">🔍 Tap to View Screen</span>
+                  </div>
+                </div>
+                <div class="ss-caption-pill"><span class="dot"></span> Live App UI · User Profile</div>
+              </div>
+              <div class="node goal-node" id="n-goal">
+                <h4>AI Goal Engine</h4>
+                <div class="sub">Target: Lose 15kg in 6 months → Decomposes into weekly &amp; daily dynamic micro-tasks</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage 4 -->
+          <div class="stage" id="s4">
+            <div class="stage-label"><span class="num">4</span>Daily User Interfaces &amp; Logging</div>
+            <div class="hub-cluster-wrap" style="margin-bottom: 36px">
+              <div class="node hub node-has-ss" id="n-home" onclick="openAppModal('home', event)">
+                <div class="node-header">
+                  <h4>Home Screen</h4>
+                  <div class="sub">User app command center</div>
+                </div>
+                <div class="ss-device-frame">
+                  <img src="assets/screenshots/app_home.jpg" alt="Home Screen & Trackers" loading="lazy" />
+                  <div class="ss-hover-overlay">
+                    <span class="ss-expand-badge">🔍 Tap to View Screen</span>
+                  </div>
+                </div>
+                <div class="ss-caption-pill"><span class="dot"></span> Live App UI · Home Dashboard</div>
+              </div>
+              <div class="cluster" id="n-home-cluster">
+                <div class="cluster-inner">
+                  <div class="node chip" id="n-h1"><h4>Overview</h4></div>
+                  <div class="node chip" id="n-h2"><h4>Fasting Section</h4></div>
+                  <div class="node chip" id="n-h3"><h4>Blood Test Section</h4></div>
+                  <div class="node chip" id="n-h4"><h4>Achievements &amp; Badges</h4></div>
+                  <div class="node chip" id="n-h5"><h4>Weight Loss Graph</h4></div>
+                  <div class="node chip" id="n-h6"><h4>Avg Weight Meter</h4></div>
+                  <div class="node chip" id="n-h7"><h4>Transformation Gallery</h4></div>
+                  <div class="node chip node-has-ss" id="n-h8" onclick="openAppModal('steps', event)" title="Click to view Step Counter UI"><h4>Step Counter &amp; Calculator</h4><span class="ss-chip-badge">📱 Live UI</span></div>
+                  <div class="node chip" id="n-h9"><h4>Sleep Tracker</h4></div>
+                  <div class="node chip" id="n-h10"><h4>Personalised Recipes</h4></div>
+                </div>
+              </div>
+            </div>
+            <div class="row center">
+              <div class="node solo node-has-ss" id="n-log" onclick="openAppModal('log', event)">
+                <div class="node-header">
+                  <h4>Log Screen</h4>
+                  <div class="sub">Daily performance, streak &amp; macro log</div>
+                </div>
+                <div class="ss-device-frame">
+                  <img src="assets/screenshots/app_log.jpg" alt="Log & Progress Screen" loading="lazy" />
+                  <div class="ss-hover-overlay">
+                    <span class="ss-expand-badge">🔍 Tap to View Screen</span>
+                  </div>
+                </div>
+                <div class="ss-caption-pill"><span class="dot"></span> Live App UI · Log &amp; Progress</div>
+              </div>
+              <div class="node solo node-has-ss" id="n-diet" onclick="openAppModal('diet', event)">
+                <div class="node-header">
+                  <h4>Diet Screen</h4>
+                  <div class="sub">Adaptive daily nutrition plan</div>
+                </div>
+                <div class="ss-device-frame">
+                  <img src="assets/screenshots/app_diet.jpg" alt="Diet & Nutrition Plan Screen" loading="lazy" />
+                  <div class="ss-hover-overlay">
+                    <span class="ss-expand-badge">🔍 Tap to View Screen</span>
+                  </div>
+                </div>
+                <div class="ss-caption-pill"><span class="dot"></span> Live App UI · Diet Plan</div>
+              </div>
+              <div class="node solo node-has-ss" id="n-exercise" onclick="openAppModal('exercise', event)">
+                <div class="node-header">
+                  <h4>Exercise Screen</h4>
+                  <div class="sub">Adaptive workout schedule</div>
+                </div>
+                <div class="ss-device-frame">
+                  <img src="assets/screenshots/app_exercise.jpg" alt="Exercise Schedule Screen" loading="lazy" />
+                  <div class="ss-hover-overlay">
+                    <span class="ss-expand-badge">🔍 Tap to View Screen</span>
+                  </div>
+                </div>
+                <div class="ss-caption-pill"><span class="dot"></span> Live App UI · Workout Plan</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage 5: CENTER OF GRAVITY -->
+          <div class="stage" id="s5">
+            <div class="stage-label"><span class="num">5</span>Center of Gravity · Master AI Health OS &amp; Multi-Agent Swarm</div>
+            <div class="hub-cluster-wrap">
+              <div class="node ai-os-hub" id="n-ai-os">
+                <h4>Master AI Health Operating System</h4>
+                <div class="sub">Central Intelligence Core coordinating real-time inference, multi-agent swarm, and clinical safety rules</div>
+              </div>
+              <div class="cluster" id="n-agents-cluster">
+                <div class="cluster-inner" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr))">
+                  <div class="node chip" id="n-ag1">
+                    <h4>Nutrition Agent</h4>
+                    <div class="sub">Dynamic macro balancing</div>
+                  </div>
+                  <div class="node chip" id="n-ag2">
+                    <h4>Exercise Agent</h4>
+                    <div class="sub">Progression &amp; fatigue tracking</div>
+                  </div>
+                  <div class="node chip" id="n-ag3">
+                    <h4>Behavior &amp; Habit Agent</h4>
+                    <div class="sub">Drop-off risk prediction &amp; nudges</div>
+                  </div>
+                  <div class="node chip" id="n-ag4">
+                    <h4>Clinical Safety Agent</h4>
+                    <div class="sub">Contraindication &amp; lab checks</div>
+                  </div>
+                  <div class="node chip" id="n-ag5">
+                    <h4>Re-engagement Agent</h4>
+                    <div class="sub">Automated voice &amp; WhatsApp outreach</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage 6 -->
+          <div class="stage" id="s6">
+            <div class="stage-label"><span class="num">6</span>Patient Long-Term Vector Memory Store</div>
+            <div class="node memory-node" id="n-memory">
+              <h4>Patient Vector Memory Store</h4>
+              <div class="sub">Persistent context store: Diet history, workout response, lab markers, clinical notes, medication schedule, and behavioral patterns</div>
+            </div>
+          </div>
+
+          <!-- Stage 7 -->
+          <div class="stage" id="s7">
+            <div class="stage-label"><span class="num">7</span>AI Decision Nodes &amp; Confidence Gating Loop</div>
+            <div class="row center">
+              <div class="node decision-node" id="n-dec1">
+                <span class="decision-tag">Decision Gate 1</span>
+                <h4>Plateau or Drop-off Risk Detected?</h4>
+                <div class="sub">Evaluates 3-day log gaps, weight plateaus, and engagement friction</div>
+              </div>
+              <div class="node decision-node" id="n-dec2">
+                <span class="decision-tag">Decision Gate 2</span>
+                <h4>Clinical Safety &amp; Confidence Score</h4>
+                <div class="sub">High (>90%) → Auto-Apply | Low / Flagged → Route to Doctor Review</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage 8 -->
+          <div class="stage" id="s8">
+            <div class="stage-label"><span class="num">8</span>Autonomous Action Execution Engine</div>
+            <div class="row center">
+              <div class="node actions-node" id="n-auto-actions">
+                <h4>Autonomous Action Engine</h4>
+                <div class="sub">Executes dynamic adjustments without human lag:</div>
+                <ul class="action-list">
+                  <li><span class="check">✓</span> Auto-adjust calorie &amp; macro targets</li>
+                  <li><span class="check">✓</span> Dispatch AI Voice &amp; WhatsApp nudges</li>
+                  <li><span class="check">✓</span> Order diagnostic blood lab tests</li>
+                  <li><span class="check">✓</span> Escalate high-risk patients to doctor</li>
+                  <li><span class="check">✓</span> Synthesize weekly progress reports</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage 9 -->
+          <div class="stage" id="s9">
+            <div class="stage-label"><span class="num">9</span>Clinical Oversight Layer · Doctor Dashboard</div>
+            <div class="row center" style="margin-bottom: 40px">
+              <div class="node hub" id="n-doctor">
+                <h4>Doctor Dashboard</h4>
+                <div class="sub">Clinical oversight &amp; safety layer</div>
+              </div>
+            </div>
+            <div class="branch-row">
+              <div class="hub-cluster-wrap" style="max-width: 420px">
+                <div class="node hub" id="n-appt">
+                  <h4>Manage Appointments</h4>
+                </div>
+                <div class="cluster" id="n-appt-cluster">
+                  <div class="cluster-inner">
+                    <div class="node chip" id="n-ap1"><h4>Manage Reports</h4></div>
+                    <div class="node chip" id="n-ap2"><h4>Provide Prescription</h4></div>
+                    <div class="node chip" id="n-ap3"><h4>Suggest Treatment</h4></div>
+                    <div class="node chip" id="n-ap4"><h4>View Patient History</h4></div>
+                  </div>
+                </div>
+              </div>
+              <div class="node solo" id="n-review" style="align-self: center">
+                <h4>Review Diet &amp; Exercise Plan</h4>
+                <div class="sub">Reviews AI-generated plan when confidence requires doctor release</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage 10 -->
+          <div class="stage" id="s10">
+            <div class="stage-label"><span class="num">10</span>Centralized Data Backbone</div>
+            <div class="node data-node" id="n-data">
+              <h4>Centralized Data Platform</h4>
+              <div class="sub">Every agent, screen, vector memory query, and clinical action reads and writes here</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="revenue">
+        <div class="revenue-head">
+          <div class="kicker">Investor economics</div>
+          <h2>Eight ways this AI platform turns into revenue</h2>
+          <p>
+            The core engine is subscription plus clinical services; multi-agent automation reduces marginal delivery cost to zero while unlocking high-margin enterprise licensing and clinical partnerships.
+          </p>
+        </div>
+        <div class="rev-grid">
+          <div class="rev-card">
+            <span class="tag">Core · recurring</span>
+            <h4>Subscription tiers</h4>
+            <p>
+              Basic (App + Multi-Agent OS), Premium (+ Doctor Plans), Clinical (+ Live Consults). Primary high-margin ARR line.
+            </p>
+          </div>
+          <div class="rev-card">
+            <span class="tag">Core · per-use</span>
+            <h4>Doctor consultations</h4>
+            <p>
+              Bundled consult credits inside higher tiers, plus pay-per-consult for prescriptions or treatment updates.
+            </p>
+          </div>
+          <div class="rev-card">
+            <span class="tag">Upsell</span>
+            <h4>AI Agent Pro add-ons</h4>
+            <p>
+              Advanced continuous glucose monitoring, real-time stress coaching, and proactive recovery agents.
+            </p>
+          </div>
+          <div class="rev-card">
+            <span class="tag">B2B</span>
+            <h4>Corporate wellness</h4>
+            <p>
+              Seats sold to employers—larger multi-year contracts, lower churn, scalable second acquisition channel.
+            </p>
+          </div>
+          <div class="rev-card">
+            <span class="tag">B2B</span>
+            <h4>Platform licensing</h4>
+            <p>
+              White-label the AI Health OS + doctor dashboard to hospital chains, fitness networks, and longevity clinics.
+            </p>
+          </div>
+          <div class="rev-card">
+            <span class="tag">Commerce</span>
+            <h4>Recipe &amp; grocery marketplace</h4>
+            <p>
+              Commission on ingredient kits and meal delivery, dynamically triggered by the Nutrition Agent.
+            </p>
+          </div>
+          <div class="rev-card">
+            <span class="tag">Data</span>
+            <h4>Insight partnerships</h4>
+            <p>
+              Aggregated, consented, anonymized outcome data licensed to nutrition, pharma, or clinical research partners.
+            </p>
+          </div>
+          <div class="rev-card">
+            <span class="tag">Insurance</span>
+            <h4>Insurer tie-ins</h4>
+            <p>
+              Verified health progress qualifies users for wellness-linked premium discounts and referral bonuses.
+            </p>
+          </div>
+        </div>
+        <div class="funnel-note">
+          <h5>Why this AI-Native Platform is fundable</h5>
+          <p>
+            The front-of-house AI agents convert traffic faster than traditional apps, the multi-agent OS automates 90%+ of routine coaching work, the doctor safety loop provides an unassailable clinical moat, and persistent vector memory compounding creates immense moat lock-in.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- App Screenshots Lightbox Modal -->
+    <div id="app-ss-modal" class="app-modal-overlay" onclick="closeAppModalOnBackdrop(event)">
+      <div class="app-modal-card" onclick="event.stopPropagation()">
+        <div class="app-modal-header">
+          <div class="app-modal-title-wrap">
+            <span style="font-size:20px">📱</span>
+            <h3 id="modal-header-title">App Screenshot Preview</h3>
+          </div>
+          <button class="app-modal-close-btn" onclick="closeAppModal()" aria-label="Close modal">&times;</button>
+        </div>
+        
+        <div class="app-modal-tabs">
+          <button class="app-modal-tab" data-key="profile" onclick="switchAppModalTab('profile')">1. Profile &amp; Membership</button>
+          <button class="app-modal-tab" data-key="home" onclick="switchAppModalTab('home')">2. Home &amp; Trackers</button>
+          <button class="app-modal-tab" data-key="log" onclick="switchAppModalTab('log')">3. Log &amp; Progress</button>
+          <button class="app-modal-tab" data-key="steps" onclick="switchAppModalTab('steps')">4. Step Counter</button>
+          <button class="app-modal-tab" data-key="diet" onclick="switchAppModalTab('diet')">5. Diet &amp; Nutrition</button>
+          <button class="app-modal-tab" data-key="exercise" onclick="switchAppModalTab('exercise')">6. Exercise Plan</button>
+        </div>
+
+        <div class="app-modal-body">
+          <div class="phone-frame-container">
+            <div class="phone-frame-notch"></div>
+            <div class="phone-frame-screen">
+              <img id="modal-img" src="" alt="App Screenshot" />
+            </div>
+          </div>
+
+          <div class="app-modal-info">
+            <h4 id="modal-title">Screen Title</h4>
+            <div class="modal-subtitle" id="modal-subtitle">Stage Tag</div>
+            <p id="modal-desc">Description</p>
+
+            <div class="app-modal-features">
+              <h5>✨ Key Interface Features</h5>
+              <ul id="modal-features-list"></ul>
+            </div>
+
+            <div class="app-modal-features" style="background: rgba(var(--violet), 0.06); border-color: rgba(var(--violet), 0.25);">
+              <h5 style="color: var(--ink)">🧠 Master AI Health OS Integration</h5>
+              <p id="modal-ai-info" style="margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--muted);"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-modal-footer">
+          <button class="app-modal-nav-btn" onclick="navigateAppModal(-1)">‹ Previous Screen</button>
+          <span id="modal-counter-indicator" style="font-size: 12.5px; font-weight: 600; color: var(--muted)">1 / 5</span>
+          <button class="app-modal-nav-btn" onclick="navigateAppModal(1)">Next Screen ›</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Microsoft AI Voice Guide Floating Widget -->
+    <div id="ms-voice-guide" class="voice-guide-widget">
+      <div class="voice-guide-inner">
+        <div class="voice-guide-badge">
+          <span class="ms-logo-icon">❖</span>
+          <span class="ms-voice-label">Microsoft Speech Assistant</span>
+        </div>
+        
+        <div class="voice-guide-controls">
+          <button id="tour-play-btn" class="tour-btn primary" onclick="toggleVoiceTour()" title="Play or Pause Guided Tour">
+            <span class="play-icon">▶</span> <span class="btn-text">Start Tour</span>
+          </button>
+          <button id="tour-next-btn" class="tour-btn" onclick="nextVoiceTourStage()" title="Next Stage">
+            ⏭ Next Stage
+          </button>
+          <button id="tour-stop-btn" class="tour-btn danger" onclick="stopVoiceTour()" title="Stop Tour">
+            ⏹ Stop
+          </button>
+          <button id="tour-test-btn" class="tour-btn" onclick="testVoiceAudio()" title="Test Audio &amp; Speaker Volume" style="border-color: rgba(var(--teal), 0.5); color: var(--teal)">
+            🔊 Test Audio
+          </button>
+          
+          <div class="tour-divider"></div>
+          
+          <select id="voice-rate-select" class="tour-select" onchange="changeVoiceRate(this.value)" title="Voice Speed">
+            <option value="0.85">0.85x Speed</option>
+            <option value="1.0" selected>1.0x Speed</option>
+            <option value="1.15">1.15x Speed</option>
+            <option value="1.3">1.3x Speed</option>
+          </select>
+          
+          <select id="voice-engine-select" class="tour-select" onchange="changeVoiceEngine()" title="Select Voice Engine">
+            <option value="0">Loading Microsoft Voices...</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Live Subtitle Closed Captions Bar -->
+      <div id="closed-captions-bar" class="closed-captions-bar">
+        <span class="cc-badge">CC</span>
+        <span id="cc-text" class="cc-text">Click "Start Tour" or click any node to listen to Microsoft AI Voice explanations...</span>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const reduceMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+
+        const nodes = Array.from(document.querySelectorAll(".node"));
+        nodes.forEach((el, i) => el.style.setProperty("--i", i));
+        const clusters = Array.from(document.querySelectorAll(".cluster"));
+        clusters.forEach((el, i) => el.style.setProperty("--ci", i));
+
+        const edges = [
+          // Acquisition -> CRM
+          ["n-website", "n-crm1"],
+          ["n-ads", "n-crm1"],
+          ["n-search", "n-crm1"],
+          ["n-crm1", "n-crm2"],
+          ["n-crm2", "n-crm3"],
+          ["n-crm3", "n-crm4"],
+          ["n-crm4", "n-crm5"],
+
+          // CRM -> Registration -> Goal Engine
+          ["n-crm5", "n-reg"],
+          ["n-reg", "n-goal"],
+
+          // Goal Engine -> Home Screen -> Daily Use
+          ["n-goal", "n-home"],
+          ["n-home", "n-home-cluster"],
+          ["n-home-cluster", "n-log"],
+          ["n-log", "n-diet"],
+          ["n-diet", "n-exercise"],
+
+          // Daily Use -> Master AI Health OS (Center of Gravity)
+          ["n-exercise", "n-ai-os"],
+
+          // Master AI Health OS ↔ Multi-Agent Ecosystem
+          ["n-ai-os", "n-agents-cluster"],
+
+          // Master AI Health OS ↔ Patient Vector Memory (Bidirectional Context)
+          ["n-ai-os", "n-memory"],
+          ["n-memory", "n-ai-os", { dashed: true, label: "Context Retrieval", side: "left", lane: 1 }],
+
+          // AI Health OS -> Decision Gate 1 (Plateau / Drop-off Risk)
+          ["n-ai-os", "n-dec1"],
+
+          // Decision Gate 1 -> Decision Gate 2 (Confidence Score)
+          ["n-dec1", "n-dec2"],
+
+          // Decision Gate 2 (High Confidence >90%) -> Autonomous Action Engine
+          ["n-dec2", "n-auto-actions", { label: "High Confidence (>90%)" }],
+
+          // Decision Gate 2 (Low Confidence / Flagged) -> Doctor Dashboard
+          ["n-dec2", "n-doctor", { dashed: true, label: "Low Confidence / Risk Flag", side: "right", lane: 0 }],
+
+          // Autonomous Action Engine -> App & Reminders
+          ["n-auto-actions", "n-diet", { dashed: true, label: "Auto-apply tweaks", side: "left", lane: 0 }],
+
+          // Re-engagement Agent -> CRM Feedback Loop
+          ["n-agents-cluster", "n-crm5", { dashed: true, label: "Re-engagement Nudge", side: "right", lane: 2 }],
+
+          // Doctor Dashboard -> App (Approved Plan)
+          ["n-doctor", "n-appt"],
+          ["n-appt", "n-appt-cluster"],
+          ["n-doctor", "n-review"],
+          ["n-review", "n-diet", { dashed: true, label: "Doctor-approved plan", side: "left", lane: 2 }],
+
+          // Data Backbone (Distinct lanes for every side route)
+          ["n-doctor", "n-data", { dashed: true, side: "left", lane: 3 }],
+          ["n-memory", "n-data", { dashed: true, side: "left", lane: 4 }],
+          ["n-reg", "n-data", { dashed: true, side: "left", lane: 5 }],
+          ["n-data", "n-crm5", { dashed: true, label: "Platform Feedback", side: "left", lane: 6 }],
+
+          ["n-auto-actions", "n-data", { dashed: true, side: "right", lane: 1 }],
+          ["n-ai-os", "n-data", { dashed: true, side: "right", lane: 3 }],
+          ["n-home-cluster", "n-data", { dashed: true, side: "right", lane: 4 }]
+        ];
+
+        function draw() {
+          const flow = document.getElementById("flow");
+          const svg = document.getElementById("connectors");
+          const fr = flow.getBoundingClientRect();
+          svg.setAttribute("width", fr.width);
+          svg.setAttribute("height", fr.height);
+          svg.innerHTML = `<defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--edge-teal)"/></marker>
+      <marker id="arrowAmber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--edge-amber)"/></marker>
+      <filter id="edgeGlow" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="1.8" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>`;
+
+          function box(el) {
+            const r = el.getBoundingClientRect();
+            return {
+              left: r.left - fr.left,
+              right: r.right - fr.left,
+              top: r.top - fr.top,
+              bottom: r.bottom - fr.top,
+              cx: r.left - fr.left + r.width / 2,
+              cy: r.top - fr.top + r.height / 2,
+              w: r.width,
+              h: r.height,
+            };
+          }
+
+          function roundedPath(pts, r) {
+            let d = `M ${pts[0].x} ${pts[0].y}`;
+            for (let i = 1; i < pts.length - 1; i++) {
+              const p0 = pts[i - 1],
+                p1 = pts[i],
+                p2 = pts[i + 1];
+              const d0 = { x: p1.x - p0.x, y: p1.y - p0.y },
+                d1 = { x: p2.x - p1.x, y: p2.y - p1.y };
+              const len0 = Math.hypot(d0.x, d0.y) || 1,
+                len1 = Math.hypot(d1.x, d1.y) || 1;
+              const rr = Math.min(r, len0 / 2, len1 / 2);
+              const a = {
+                x: p1.x - (d0.x / len0) * rr,
+                y: p1.y - (d0.y / len0) * rr,
+              };
+              const b = {
+                x: p1.x + (d1.x / len1) * rr,
+                y: p1.y + (d1.y / len1) * rr,
+              };
+              d += ` L ${a.x} ${a.y} Q ${p1.x} ${p1.y} ${b.x} ${b.y}`;
+            }
+            d += ` L ${pts[pts.length - 1].x} ${pts[pts.length - 1].y}`;
+            return d;
+          }
+
+          // Pre-calculate port counts to space out horizontal stubs when multiple lines connect to the same box side
+          const sidePortIndex = {};
+          const sidePortTotal = {};
+          edges.forEach(([f, t, opts]) => {
+            if (opts && opts.side) {
+              const keyF = f + "_" + opts.side;
+              const keyT = t + "_" + opts.side;
+              sidePortTotal[keyF] = (sidePortTotal[keyF] || 0) + 1;
+              sidePortTotal[keyT] = (sidePortTotal[keyT] || 0) + 1;
+            }
+          });
+
+          function getPortY(nodeId, side, boxObj) {
+            const key = nodeId + "_" + side;
+            const idx = sidePortIndex[key] || 0;
+            const total = sidePortTotal[key] || 1;
+            sidePortIndex[key] = idx + 1;
+            if (total <= 1) return boxObj.cy;
+            const spreadStep = Math.min(18, (boxObj.h - 12) / total);
+            return boxObj.cy - ((total - 1) / 2) * spreadStep + idx * spreadStep;
+          }
+
+          const col = document
+            .querySelector(".flow-inner")
+            .getBoundingClientRect();
+          const colLeft = col.left - fr.left,
+            colRight = col.right - fr.left;
+          const leftLanes = 7,
+            rightLanes = 5;
+          const leftGap = Math.max(
+            24,
+            Math.min(42, (colLeft - 32) / leftLanes),
+          );
+          const rightGap = Math.max(
+            24,
+            Math.min(42, (fr.width - colRight - 32) / rightLanes),
+          );
+          function laneX(side, i) {
+            return side === "left"
+              ? colLeft - 24 - i * leftGap
+              : colRight + 24 + i * rightGap;
+          }
+
+          const outCount = {};
+          edges.forEach(([f]) => (outCount[f] = (outCount[f] || 0) + 1));
+
+          edges.forEach(([fromId, toId, opts], idx) => {
+            opts = opts || {};
+            const a = document.getElementById(fromId),
+              b = document.getElementById(toId);
+            if (!a || !b) return;
+            const ba = box(a),
+              bb = box(b);
+            let d, p1, p2, laneX_;
+
+            const verticalGap =
+              Math.min(ba.bottom, bb.bottom) - Math.max(ba.top, bb.top);
+            const sameRow =
+              !opts.side && verticalGap > Math.min(ba.h, bb.h) * 0.5;
+
+            if (opts.side) {
+              laneX_ = laneX(opts.side, opts.lane || 0);
+              const yA = getPortY(fromId, opts.side, ba);
+              const yB = getPortY(toId, opts.side, bb);
+              const pa =
+                opts.side === "left"
+                  ? { x: ba.left, y: yA }
+                  : { x: ba.right, y: yA };
+              const pb =
+                opts.side === "left"
+                  ? { x: bb.left, y: yB }
+                  : { x: bb.right, y: yB };
+              d = roundedPath(
+                [pa, { x: laneX_, y: pa.y }, { x: laneX_, y: pb.y }, pb],
+                16,
+              );
+              p1 = pa;
+              p2 = pb;
+            } else if (sameRow) {
+              const aLeft = ba.cx < bb.cx;
+              const pa = aLeft
+                ? { x: ba.right, y: ba.cy }
+                : { x: ba.left, y: ba.cy };
+              const pb = aLeft
+                ? { x: bb.left, y: bb.cy }
+                : { x: bb.right, y: bb.cy };
+              const midX = (pa.x + pb.x) / 2;
+              d = `M ${pa.x} ${pa.y} C ${midX} ${pa.y}, ${midX} ${pb.y}, ${pb.x} ${pb.y}`;
+              p1 = pa;
+              p2 = pb;
+            } else {
+              const forward = bb.top >= ba.bottom;
+              const spread = (v, cx, half) =>
+                Math.max(cx - half, Math.min(cx + half, v));
+              const n = outCount[fromId] || 1;
+              const fanX = n > 1 ? spread(bb.cx, ba.cx, ba.w / 2 - 12) : ba.cx;
+              const pa = forward
+                ? { x: fanX, y: ba.bottom }
+                : { x: ba.cx, y: ba.top };
+              const pb = forward
+                ? { x: bb.cx, y: bb.top }
+                : { x: bb.cx, y: bb.bottom };
+              const midY = (pa.y + pb.y) / 2;
+              d = `M ${pa.x} ${pa.y} C ${pa.x} ${midY}, ${pb.x} ${midY}, ${pb.x} ${pb.y}`;
+              p1 = pa;
+              p2 = pb;
+            }
+
+            const path = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "path",
+            );
+            path.setAttribute("d", d);
+            path.classList.add("edge");
+            path.setAttribute("filter", "url(#edgeGlow)");
+            if (opts.dashed) {
+              path.classList.add("dashed");
+              path.setAttribute("marker-end", "url(#arrowAmber)");
+            } else {
+              path.setAttribute("marker-end", "url(#arrow)");
+            }
+            svg.appendChild(path);
+
+            if (opts.label) {
+              const t = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "text",
+              );
+              if (opts.side) {
+                t.setAttribute("x", laneX_ + (opts.side === "left" ? -8 : 8));
+                t.setAttribute("y", (p1.y + p2.y) / 2);
+                t.setAttribute(
+                  "text-anchor",
+                  opts.side === "left" ? "end" : "start",
+                );
+              } else {
+                t.setAttribute("x", (p1.x + p2.x) / 2 + 8);
+                t.setAttribute("y", (p1.y + p2.y) / 2);
+              }
+              t.textContent = opts.label;
+              svg.appendChild(t);
+            }
+
+            if (!reduceMotion) {
+              const len = path.getTotalLength();
+              const trailCount = 3;
+              const pathLen = len;
+              // Slow down dot movement (6.8s+ for orange dashed lines, 5.2s+ for teal lines) and increase size
+              const dur = opts.dashed
+                ? Math.max(6.8, pathLen / 160)
+                : Math.max(5.2, pathLen / 210);
+              const baseRadius = opts.dashed ? 5.6 : 4.8;
+              for (let k = 0; k < trailCount; k++) {
+                const dot = document.createElementNS(
+                  "http://www.w3.org/2000/svg",
+                  "circle",
+                );
+                dot.setAttribute("r", Math.max(2.2, baseRadius - k * 0.9).toFixed(1));
+                dot.classList.add("pulse");
+                if (opts.dashed) dot.classList.add("amber");
+                dot.style.opacity = (1 - k * 0.25).toFixed(2);
+                const motion = document.createElementNS(
+                  "http://www.w3.org/2000/svg",
+                  "animateMotion",
+                );
+                motion.setAttribute("dur", dur.toFixed(2) + "s");
+                motion.setAttribute("repeatCount", "indefinite");
+                motion.setAttribute(
+                  "begin",
+                  (0.2 + k * 0.35).toFixed(2) + "s",
+                );
+                motion.setAttribute("path", d);
+                dot.appendChild(motion);
+                svg.appendChild(dot);
+              }
+            }
+          });
+        }
+
+        const themeBtn = document.getElementById("theme-toggle");
+        if (themeBtn) {
+          themeBtn.addEventListener("click", () => {
+            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            const nextTheme = isDark ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", nextTheme);
+            const label = themeBtn.querySelector(".theme-label");
+            if (label) label.textContent = isDark ? "Light Theme" : "Dark Theme";
+            draw();
+          });
+        }
+
+        window.addEventListener("load", () => setTimeout(draw, 60));
+        window.addEventListener("resize", () => {
+          draw();
+        });
+
+        /* Modal Lightbox Data & Logic */
+        const appScreensData = {
+          profile: {
+            index: 0,
+            key: "profile",
+            title: "Profile & Membership Screen",
+            subtitle: "Stage 3 · App Onboarding & User Profile",
+            image: "assets/screenshots/app_profile.jpg",
+            description: "Displays core user identity data including Full Name, Phone Number, Email, Account ID, and Genestac Pro Membership tier. Serves as the primary onboarding entry point.",
+            features: [
+              "User Identity: Jaskamal Singh (ID: 981e285b)",
+              "Contact Info: Phone (9810834544) & verified Email",
+              "Membership Tier: Genestac Pro Membership (50% Off Special unlocked)",
+              "Bottom Bar Navigation tab highlighting active Profile section"
+            ],
+            aiConnection: "Sends baseline age, height, weight, and target goals to Master AI Health OS & AI Goal Engine to calculate daily target dynamic micro-tasks."
+          },
+          home: {
+            index: 1,
+            key: "home",
+            title: "Home Dashboard & Performance Overview",
+            subtitle: "Stage 4 · Daily Command Center & Goal Overview",
+            image: "assets/screenshots/app_home.jpg",
+            description: "The primary user app command center displaying daily greeting, re-engagement alerts, overall goal completion (53%), total weight lost (8 kg), weekly delta comparisons, and earned achievement badges.",
+            features: [
+              "Greeting & Re-engagement: '👋 Hey Jaskamal Singh, You've missed a day — let's get back on track today.'",
+              "Telemetry Overview: Last Sync (Aug 22), Goal Progress (53%), Total Lost (8 kg), Current Streak indicator",
+              "Weekly Performance: Comparison widget (This Week: 0.0 kg vs Last Week: +2.2 kg Gained with '🔥 Faster Pace' badge)",
+              "Gamification: Achievements & Badges (2 of 6 unlocked: Bronze Dropper, Silver Striker)"
+            ],
+            aiConnection: "Master AI Health OS evaluates progress trends here to trigger automated re-engagement nudges when inactivity is detected."
+          },
+          log: {
+            index: 2,
+            key: "log",
+            title: "Log & Trackers Screen",
+            subtitle: "Stage 4 · Hydration, Sleep & Recipe Logging",
+            image: "assets/screenshots/app_log.jpg",
+            description: "Interactive logging interface for tracking daily water intake, sleep duration, and viewing AI-recommended personalized recipe ideas.",
+            features: [
+              "Hydration Tracker: Dynamic target (2.75L remaining), quick +0.25L & +0.5L logging buttons & history graph",
+              "Sleep Tracker: Total sleep counter (0h 00m logged) & instant 'Log Sleep' trigger",
+              "Personalized Recipe Ideas: AI-curated nutrition recipes matched to macro goals",
+              "Top weight progress bar & profile quick badge"
+            ],
+            aiConnection: "Hydration and sleep logs stream continuously into Patient Vector Memory & Behavior Agent for drop-off risk predictions."
+          },
+          steps: {
+            index: 3,
+            key: "steps",
+            title: "Step Counter & Health Calculator",
+            subtitle: "Stage 4 · Daily Telemetry & Pedometer",
+            image: "assets/screenshots/app_steps.jpg",
+            description: "Live pedometer telemetry engine that tracks steps taken today against a 10,000 daily goal and computes secondary health metrics.",
+            features: [
+              "Live Pedometer & Manual 'Edit Steps' option",
+              "Daily Goal Progress Bar (Target: 10,000 steps)",
+              "Calculated Health Metrics: Distance Walked (km), Calories Burned (kcal), Active Duration (mins)",
+              "Biomechanical Dynamics: ~0.76m/step distance calculation & ~0.04 kcal/step energy expenditure formula"
+            ],
+            aiConnection: "Step count feeds directly into Exercise Agent to dynamically adjust remaining daily workout intensity and calorie deficit targets."
+          },
+          diet: {
+            index: 4,
+            key: "diet",
+            title: "Diet & Nutrition Plan",
+            subtitle: "Stage 4 · Adaptive Nutrition & Meal Guide",
+            image: "assets/screenshots/app_diet.jpg",
+            description: "Tailored 4-meal daily wellness guide generated dynamically by the AI Nutrition Agent.",
+            features: [
+              "Meal Schedule: Breakfast, Lunch, Snack, Dinner timeline with window status ('Window closed')",
+              "Current Dish: Oatmeal with Almond Milk, Banana, and Walnuts",
+              "Macro Breakdown: 420 kcal | 18g Protein | 48g Carbs | 12g Fats",
+              "Preparation Guidance: Portion-controlled for steady energy and mid-morning crash prevention"
+            ],
+            aiConnection: "Nutrition Agent adjusts meal macro allocations automatically if weight loss plateaus or fasting windows change."
+          },
+          exercise: {
+            index: 5,
+            key: "exercise",
+            title: "Exercise & Workout Plan",
+            subtitle: "Stage 4 · Weekly Adaptive Workout Schedule",
+            image: "assets/screenshots/app_exercise.jpg",
+            description: "Weekly interactive workout calendar providing day-by-day tailored exercise routines with sets, reps, and workout type tags.",
+            features: [
+              "Day Tabs: Mon, Tue, Wed, Thu, Fri, Sat weekly picker",
+              "Workout Type: Monday's Workout — Cardio routine",
+              "Exercise Routines: 1. Brisk Walking (1 set × 30 reps), 2. Jumping Jacks (1 set × 30 reps)",
+              "Active progress indicators & exercise completion tracking"
+            ],
+            aiConnection: "Exercise Agent modifies workout set/rep volume based on fatigue telemetry and recovery score."
+          }
+        };
+
+        const keysOrder = ["profile", "home", "log", "steps", "diet", "exercise"];
+        let currentModalKey = "profile";
+
+        window.openAppModal = function (key, evt) {
+          if (evt) evt.stopPropagation();
+          currentModalKey = key || "profile";
+          renderModalContent(currentModalKey);
+          const modal = document.getElementById("app-ss-modal");
+          if (modal) modal.classList.add("active");
+        };
+
+        window.closeAppModal = function () {
+          const modal = document.getElementById("app-ss-modal");
+          if (modal) modal.classList.remove("active");
+        };
+
+        window.closeAppModalOnBackdrop = function (evt) {
+          if (evt.target.id === "app-ss-modal") {
+            window.closeAppModal();
+          }
+        };
+
+        window.switchAppModalTab = function (key) {
+          currentModalKey = key;
+          renderModalContent(key);
+        };
+
+        window.navigateAppModal = function (dir) {
+          const currIdx = keysOrder.indexOf(currentModalKey);
+          let newIdx = (currIdx + dir + keysOrder.length) % keysOrder.length;
+          currentModalKey = keysOrder[newIdx];
+          renderModalContent(currentModalKey);
+        };
+
+        function renderModalContent(key) {
+          const data = appScreensData[key];
+          if (!data) return;
+
+          document.getElementById("modal-header-title").textContent = data.title;
+          document.getElementById("modal-img").src = data.image;
+          document.getElementById("modal-img").alt = data.title;
+          document.getElementById("modal-title").textContent = data.title;
+          document.getElementById("modal-subtitle").textContent = data.subtitle;
+          document.getElementById("modal-desc").textContent = data.description;
+          document.getElementById("modal-ai-info").textContent = data.aiConnection;
+          document.getElementById("modal-counter-indicator").textContent = (data.index + 1) + " / " + keysOrder.length;
+
+          const list = document.getElementById("modal-features-list");
+          list.innerHTML = data.features.map(f => `<li>${f}</li>`).join("");
+
+          document.querySelectorAll(".app-modal-tab").forEach(tab => {
+            if (tab.getAttribute("data-key") === key) {
+              tab.classList.add("active");
+            } else {
+              tab.classList.remove("active");
+            }
+          });
+        }
+
+        document.addEventListener("keydown", function (e) {
+          const modal = document.getElementById("app-ss-modal");
+          if (modal && modal.classList.contains("active")) {
+            if (e.key === "Escape") window.closeAppModal();
+            if (e.key === "ArrowRight") window.navigateAppModal(1);
+            if (e.key === "ArrowLeft") window.navigateAppModal(-1);
+          }
+        });
+
+        /* Microsoft Speech Assistant & Guided Tour Controller */
+        const tourStagesData = [
+          // STAGE 1
+          { stageId: "s1", nodeId: "n-website", title: "Stage 1 · Website Channel", text: "Stage 1: Patient Acquisition Channels. Website line: Organic and direct traffic." },
+          { stageId: "s1", nodeId: "n-ads", title: "Stage 1 · Meta Ads Channel", text: "Meta Ads line: Paid social lead generation." },
+          { stageId: "s1", nodeId: "n-search", title: "Stage 1 · Google Search Channel", text: "Google Search line: Search engine optimization, blogs, and landing pages." },
+
+          // STAGE 2 — 5 Sequential Steps
+          { stageId: "s2", nodeId: "n-crm1", title: "Stage 2 · Step 1: WhatsApp AI Chatbot", text: "Stage 2: CRM Engagement Engine. Step 1: WhatsApp AI Chatbot. Learns goals, answers questions, and books consults." },
+          { stageId: "s2", nodeId: "n-crm2", title: "Stage 2 · Step 2: AI Voice Bot", text: "Step 2: AI Voice Bot. Calls leads within 5 minutes for instant intake." },
+          { stageId: "s2", nodeId: "n-crm3", title: "Stage 2 · Step 3: Habit Reminders", text: "Step 3: Habit Reminders. Automated nudges for water, steps, fasting, and logging." },
+          { stageId: "s2", nodeId: "n-crm4", title: "Stage 2 · Step 4: WhatsApp Campaigns", text: "Step 4: WhatsApp Campaigns. Periodic re-engagement and educational content." },
+          { stageId: "s2", nodeId: "n-crm5", title: "Stage 2 · Step 5: Centralized Record", text: "Step 5: Centralized Lead Record. Single unified user profile across all touchpoints." },
+
+          // STAGE 3
+          { stageId: "s3", nodeId: "n-reg", title: "Stage 3 · Registration & Profile", text: "Stage 3: App Onboarding and AI Goal Engine. Registration and Profile captures gender, height, weight, age, and target weight." },
+          { stageId: "s3", nodeId: "n-goal", title: "Stage 3 · AI Goal Engine", text: "AI Goal Engine line: Target to lose 15 kilograms in 6 months, decomposed into weekly and daily micro-tasks." },
+
+          // STAGE 4
+          { stageId: "s4", nodeId: "n-home", title: "Stage 4 · Home Screen", text: "Stage 4: Daily User Interfaces and Logging. Home Screen line: User app command center and trackers." },
+          { stageId: "s4", nodeId: "n-log", title: "Stage 4 · Log Screen", text: "Log Screen line: Daily performance, streak, and macro log." },
+          { stageId: "s4", nodeId: "n-diet", title: "Stage 4 · Diet Screen", text: "Diet Screen line: Adaptive daily nutrition plan." },
+          { stageId: "s4", nodeId: "n-exercise", title: "Stage 4 · Exercise Screen", text: "Exercise Screen line: Adaptive workout schedule." },
+          { stageId: "s4", nodeId: "n-h8", title: "Stage 4 · Step Counter & Calculator", text: "Step Counter and Calculator line: Live pedometer tracking daily steps." },
+
+          // STAGE 5
+          { stageId: "s5", nodeId: "n-ai-os", title: "Stage 5 · Master AI Health OS", text: "Stage 5: Master AI Health Operating System. Central Intelligence Core coordinating real-time inference and multi-agent swarm." },
+          { stageId: "s5", nodeId: "n-ag1", title: "Stage 5 · Nutrition Agent", text: "Nutrition Agent line: Dynamic macro balancing." },
+          { stageId: "s5", nodeId: "n-ag2", title: "Stage 5 · Exercise Agent", text: "Exercise Agent line: Progression and fatigue tracking." },
+          { stageId: "s5", nodeId: "n-ag3", title: "Stage 5 · Behavior & Habit Agent", text: "Behavior and Habit Agent line: Drop-off risk prediction and nudges." },
+          { stageId: "s5", nodeId: "n-ag4", title: "Stage 5 · Clinical Safety Agent", text: "Clinical Safety Agent line: Contraindication and lab checks." },
+          { stageId: "s5", nodeId: "n-ag5", title: "Stage 5 · Re-engagement Agent", text: "Re-engagement Agent line: Automated voice and WhatsApp outreach." },
+
+          // STAGE 6
+          { stageId: "s6", nodeId: "n-memory", title: "Stage 6 · Vector Memory Store", text: "Stage 6: Patient Long-Term Vector Memory Store. Persistent context for diet history, workout response, lab markers, clinical notes, and behavioral patterns." },
+
+          // STAGE 7
+          { stageId: "s7", nodeId: "n-dec1", title: "Stage 7 · Decision Gate 1", text: "Stage 7: AI Decision Nodes. Decision Gate 1: Plateau or Drop-off Risk Detected, evaluating 3-day log gaps and weight plateaus." },
+          { stageId: "s7", nodeId: "n-dec2", title: "Stage 7 · Decision Gate 2", text: "Decision Gate 2: Clinical Safety and Confidence Score. High confidence auto-applies tweaks; low confidence routes to Doctor Review." },
+
+          // STAGE 8
+          { stageId: "s8", nodeId: "n-auto-actions", title: "Stage 8 · Autonomous Action Engine", text: "Stage 8: Autonomous Action Engine. Executes dynamic adjustments line by line: Auto-adjust calorie and macro targets, dispatch AI Voice and WhatsApp nudges, order diagnostic blood lab tests, escalate high-risk patients to doctor, and synthesize weekly progress reports." },
+
+          // STAGE 9
+          { stageId: "s9", nodeId: "n-doctor", title: "Stage 9 · Doctor Dashboard", text: "Stage 9: Human-in-the-Loop Clinical Safety. Doctor Dashboard line: Physician portal for clinical oversight." },
+          { stageId: "s9", nodeId: "n-appt", title: "Stage 9 · Manage Appointments", text: "Manage Appointments line: Physician portal to manage reports, provide prescriptions, suggest treatments, and view patient history." },
+          { stageId: "s9", nodeId: "n-review", title: "Stage 9 · Review Plan", text: "Review Diet and Exercise Plan line: Reviews AI-generated plan when confidence score requires doctor release." },
+
+          // STAGE 10
+          { stageId: "s10", nodeId: "n-data", title: "Stage 10 · Centralized Data Platform", text: "Stage 10: Centralized Data Platform. Every agent, screen, vector memory query, and clinical action reads and writes to this central data backbone." }
+        ];
+
+        let currentTourIndex = 0;
+        let isTourRunning = false;
+        let selectedVoice = null;
+        let speechRate = 1.0;
+
+        let audioCtx = null;
+        function playAudioChime() {
+          // Silent - tweak chime disabled per user request
+        }
+
+        window.testVoiceAudio = function() {
+          unlockAudio();
+          const testMsg = "Voice assistant ready. You will now hear me reading every step aloud.";
+          document.getElementById("cc-text").textContent = testMsg;
+          speakText(testMsg);
+        };
+
+        function initMicrosoftVoices() {
+          if (!('speechSynthesis' in window)) return;
+          
+          function populateVoiceList() {
+            const voices = window.speechSynthesis.getVoices();
+            const selectEl = document.getElementById("voice-engine-select");
+            if (!selectEl || voices.length === 0) return;
+            
+            selectEl.innerHTML = "";
+            let preferredIdx = -1;
+
+            // Priority order: Microsoft English > any English > anything
+            voices.forEach((v, idx) => {
+              const option = document.createElement("option");
+              option.value = idx;
+              const isMS = v.name.includes("Microsoft") || v.name.includes("Natural") || v.name.includes("Aria") || v.name.includes("Guy") || v.name.includes("Jenny") || v.name.includes("David") || v.name.includes("Zira");
+              const isEN = v.lang.startsWith("en");
+              option.textContent = (isMS ? "❖ " : "") + v.name + " (" + v.lang + ")";
+              selectEl.appendChild(option);
+              
+              // Prefer Microsoft English first
+              if (isMS && isEN && preferredIdx === -1) {
+                preferredIdx = idx;
+              }
+            });
+
+            // Fallback: any English voice
+            if (preferredIdx === -1) {
+              voices.forEach((v, idx) => {
+                if (v.lang.startsWith("en") && preferredIdx === -1) {
+                  preferredIdx = idx;
+                }
+              });
+            }
+
+            // Final fallback: first available voice
+            if (preferredIdx === -1) preferredIdx = 0;
+
+            selectEl.selectedIndex = preferredIdx;
+            selectedVoice = voices[preferredIdx];
+          }
+
+          populateVoiceList();
+          if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = populateVoiceList;
+          }
+        }
+
+        let activeAudio = null;
+        let isSpeakingChunks = false;
+
+        window.toggleVoiceTour = function () {
+          unlockAudio();
+          if (isTourRunning) {
+            // Already running — stop the tour
+            stopVoiceTour();
+          } else {
+            startVoiceTour(0);
+          }
+        };
+
+        function startVoiceTour(index) {
+          isTourRunning = true;
+          currentTourIndex = index % tourStagesData.length;
+          playStageTour(currentTourIndex);
+        }
+
+        window.nextVoiceTourStage = function () {
+          unlockAudio();
+          stopAllSpeech();
+          currentTourIndex = (currentTourIndex + 1) % tourStagesData.length;
+          playStageTour(currentTourIndex);
+        };
+
+        window.stopVoiceTour = function () {
+          isTourRunning = false;
+          stopAllSpeech();
+          clearTourHighlights();
+          updateTourBtnState(false);
+          document.getElementById("cc-text").textContent = 'Click "Start Tour" or click any node to listen to Human AI Voice explanations...';
+        };
+
+        window.changeVoiceRate = function (val) {
+          speechRate = parseFloat(val) || 1.0;
+          if (_currentSource) {
+            _currentSource.playbackRate.value = speechRate;
+          }
+        };
+
+        window.changeVoiceEngine = function () {
+          const selectEl = document.getElementById("voice-engine-select");
+          const voices = window.speechSynthesis.getVoices();
+          if (selectEl && voices[selectEl.value]) {
+            selectedVoice = voices[selectEl.value];
+          }
+        };
+
+        function playStageTour(index) {
+          clearTourHighlights();
+          const data = tourStagesData[index];
+          if (!data) return;
+
+          const stageEl = document.getElementById(data.stageId);
+          if (stageEl) {
+            stageEl.classList.add("tour-active");
+          }
+
+          if (data.nodeId) {
+            const nodeEl = document.getElementById(data.nodeId);
+            if (nodeEl) {
+              nodeEl.classList.add("tour-focused");
+              nodeEl.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+          } else if (stageEl) {
+            stageEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+
+          document.getElementById("cc-text").textContent = data.text;
+          updateTourBtnState(true);
+
+          speakText(data.text, () => {
+            if (isTourRunning) {
+              setTimeout(() => {
+                if (isTourRunning) {
+                  if (currentTourIndex < tourStagesData.length - 1) {
+                    currentTourIndex++;
+                    playStageTour(currentTourIndex);
+                  } else {
+                    stopVoiceTour();
+                  }
+                }
+              }, 500);
+            }
+          });
+        }
+
+        const TTS_SERVER = "http://localhost:8765/tts";
+        let _audioCtx = null;
+
+        function getAudioCtx() {
+          if (!_audioCtx) {
+            _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          }
+          if (_audioCtx.state === 'suspended') {
+            _audioCtx.resume();
+          }
+          return _audioCtx;
+        }
+
+        // Call this on every user gesture to unlock audio
+        function unlockAudio() {
+          const ctx = getAudioCtx();
+          // Play a silent buffer to unlock
+          const buf = ctx.createBuffer(1, 1, 22050);
+          const src = ctx.createBufferSource();
+          src.buffer = buf;
+          src.connect(ctx.destination);
+          src.start(0);
+        }
+
+        let _currentSource = null;
+
+        function speakText(text, onEndCallback) {
+          stopAllSpeech();
+
+          const cleanText = text.replace(/[^a-zA-Z0-9\s.,!?:-]/g, "").replace(/\s+/g, " ").trim();
+          const sentences = cleanText.match(/[^.!?]+[.!?]*/g) || [cleanText];
+
+          let index = 0;
+          isSpeakingChunks = true;
+
+          function playNext() {
+            if (!isSpeakingChunks || index >= sentences.length) {
+              isSpeakingChunks = false;
+              if (onEndCallback) onEndCallback();
+              return;
+            }
+
+            const sentence = sentences[index].trim();
+            index++;
+            if (!sentence) { playNext(); return; }
+
+            document.getElementById("cc-text").textContent = sentence;
+            speakSentence(sentence, playNext);
+          }
+
+          playNext();
+        }
+
+        function speakSentence(text, onDone) {
+          const ctx = getAudioCtx();
+          const url = TTS_SERVER + "?text=" + encodeURIComponent(text);
+
+          let finished = false;
+          function done() {
+            if (!finished) { finished = true; if (onDone) onDone(); }
+          }
+
+          fetch(url)
+            .then(res => {
+              if (!res.ok) throw new Error('TTS fetch failed: ' + res.status);
+              return res.arrayBuffer();
+            })
+            .then(arrayBuffer => ctx.decodeAudioData(arrayBuffer))
+            .then(audioBuffer => {
+              if (!isSpeakingChunks) { done(); return; }
+
+              // Stop any previous source
+              if (_currentSource) {
+                try { _currentSource.stop(); } catch(e) {}
+                _currentSource = null;
+              }
+
+              const source = ctx.createBufferSource();
+              source.buffer = audioBuffer;
+              source.playbackRate.value = speechRate || 1.0;
+              source.connect(ctx.destination);
+              _currentSource = source;
+
+              source.onended = done;
+              source.start(0);
+            })
+            .catch(() => {
+              // Fallback: browser WebSpeech
+              speakSentenceWSS(text, done);
+            });
+        }
+
+        // WebSpeech fallback
+        function speakSentenceWSS(text, onDone) {
+          if (!('speechSynthesis' in window)) { if (onDone) onDone(); return; }
+          window.speechSynthesis.cancel();
+          setTimeout(() => {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang   = 'en-US';
+            utterance.rate   = speechRate || 1.0;
+            utterance.pitch  = 1.0;
+            utterance.volume = 1.0;
+            const voices = window.speechSynthesis.getVoices();
+            const enVoice = voices.find(v => v.lang.startsWith('en'));
+            if (enVoice) utterance.voice = enVoice;
+            let finished = false;
+            function done() { if (!finished) { finished = true; if (onDone) onDone(); } }
+            utterance.onend   = done;
+            utterance.onerror = done;
+            window.speechSynthesis.speak(utterance);
+          }, 80);
+        }
+
+        function stopAllSpeech() {
+          isSpeakingChunks = false;
+          if (_currentSource) {
+            try { _currentSource.stop(); } catch(e) {}
+            _currentSource = null;
+          }
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+          }
+        }
+
+        function clearTourHighlights() {
+          document.querySelectorAll(".stage").forEach(el => el.classList.remove("tour-active"));
+          document.querySelectorAll(".node").forEach(el => el.classList.remove("tour-focused"));
+        }
+
+        function updateTourBtnState(playing, paused) {
+          const btn = document.getElementById("tour-play-btn");
+          if (!btn) return;
+          if (paused) {
+            btn.innerHTML = '<span class="play-icon">▶</span> <span class="btn-text">Resume</span>';
+            btn.classList.remove("primary");
+          } else if (playing) {
+            btn.innerHTML = '<span class="play-icon">⏸</span> <span class="btn-text">Pause</span>';
+            btn.classList.add("primary");
+          } else {
+            btn.innerHTML = '<span class="play-icon">▶</span> <span class="btn-text">Start Tour</span>';
+            btn.classList.add("primary");
+          }
+        }
+
+        // Attach direct speech explanation to flowchart nodes on click
+        document.querySelectorAll(".node").forEach(node => {
+          node.addEventListener("click", (evt) => {
+            // Prevent interference if modal screenshot opens
+            if (node.classList.contains("node-has-ss") && evt.target.closest(".ss-device-frame")) return;
+            
+            const h4 = node.querySelector("h4");
+            const sub = node.querySelector(".sub");
+            const titleText = h4 ? h4.innerText : "Component";
+            const subText = sub ? sub.innerText : "";
+            const explanation = `Selected component: ${titleText}. ${subText}. Integrated into the Master AI Health OS multi-agent network.`;
+            
+            document.getElementById("cc-text").textContent = explanation;
+            speakText(explanation);
+          });
+        });
+
+        initMicrosoftVoices();
+      })();
+    </script>
+  </body>
+</html>
